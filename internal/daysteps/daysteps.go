@@ -27,24 +27,24 @@ func parsePackage(data string) (int, time.Duration, error) {
 		return 0, 0, errors.New("dataSplit != 2")
 	}
 
-	stepsCount, stepErr := strconv.Atoi(dataSplit[0]) // Количество шагов
+	stepsCount, err := strconv.Atoi(dataSplit[0]) // Количество шагов
 
-	if stepErr != nil {
-		return 0, 0, stepErr
+	if err != nil {
+		return 0, 0, err
 	}
 
 	if stepsCount <= 0 {
 		return 0, 0, errors.New("stepCount <= 0")
 	}
 
-	walkDuration, walkErr := time.ParseDuration(dataSplit[1]) // Продолжительность прогулки
+	walkDuration, err := time.ParseDuration(dataSplit[1]) // Продолжительность прогулки
 
 	if walkDuration.Minutes() <= 0 {
 		return 0, 0, errors.New("walkDuration <= 0")
 	}
 
-	if walkErr != nil {
-		return 0, 0, walkErr
+	if err != nil {
+		return 0, 0, err
 	}
 
 	return stepsCount, walkDuration, nil
@@ -53,26 +53,26 @@ func parsePackage(data string) (int, time.Duration, error) {
 
 func DayActionInfo(data string, weight, height float64) string {
 	// TODO: реализовать функцию
-	steps, walkDuration, normalnayaErr := parsePackage(data)
+	steps, walkDuration, err := parsePackage(data)
 
 	if steps <= 0 { // Количество шагов
 		log.Println("Количество шагов <= 0")
 		return ""
 	}
 
-	if normalnayaErr != nil {
-		log.Println(normalnayaErr)
+	if err != nil {
+		log.Println(err)
 		return ""
 	}
 
 	stepDistance := float64(steps) * stepLength / mInKm // Пройденная дистанция
 
-	Calories, nenormalnayaErr := spentcalories.WalkingSpentCalories(steps, weight, height, walkDuration) // Количество каллорий
+	calories, err := spentcalories.WalkingSpentCalories(steps, weight, height, walkDuration) // Количество каллорий
 
-	if nenormalnayaErr != nil {
-		log.Println(nenormalnayaErr)
+	if err != nil {
+		log.Println(err)
 		return ""
 	}
 
-	return fmt.Sprintf("Количество шагов: %d.\nДистанция составила %.2f км.\nВы сожгли %.2f ккал.\n", steps, stepDistance, Calories)
+	return fmt.Sprintf("Количество шагов: %d.\nДистанция составила %.2f км.\nВы сожгли %.2f ккал.\n", steps, stepDistance, calories)
 }
